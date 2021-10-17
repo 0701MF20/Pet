@@ -76,6 +76,12 @@ public class CatalogActivity extends AppCompatActivity {
             cursor.close();
         }
     }
+//so after exiting the from the activity it will display the databse info
+    @Override
+    protected void onStart() {
+        super.onStart();
+        displayDatabaseInfo();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -84,7 +90,6 @@ public class CatalogActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_catalog, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
