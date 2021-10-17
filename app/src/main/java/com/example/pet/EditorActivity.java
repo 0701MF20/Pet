@@ -13,6 +13,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
+
 import com.example.pet.data.PetContract;
 import com.example.pet.data.PetDbHelper;
 
@@ -21,6 +23,8 @@ import com.example.pet.data.PetDbHelper;
  */
 public class EditorActivity extends AppCompatActivity {
 
+    /** fOR COUNT*/
+    private static int count=0;
     /** EditText field to enter the pet's name */
     private EditText mNameEditText;
 
@@ -107,6 +111,8 @@ public class EditorActivity extends AppCompatActivity {
      values2.put(PetContract.PetEntry.COLUMN_PET_WEIGHT,weights);
      //for inserting contentValues in database
      db.insert(PetContract.PetEntry.TABLE_NAME,null,values2);
+     Toast.makeText(this,"Pet saved with Id:"+(++count),Toast.LENGTH_SHORT).show();
+
  }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
