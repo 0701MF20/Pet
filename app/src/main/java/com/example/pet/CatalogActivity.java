@@ -70,7 +70,7 @@ public class CatalogActivity extends AppCompatActivity {
             // Display the number of rows in the Cursor (which reflects the number of rows in the
             // pets table in the database).
             TextView displayView = (TextView) findViewById(R.id.text_view_pet);
-            displayView.setText("Number of rows in pets database table: " + cursor.getCount());
+            displayView.setText("The pet table have " + cursor.getCount()+".");
             //column names are just addded by appending
             displayView.append("\n"+PetContract.PetEntry._Id+"\t"+ PetContract.PetEntry.COLUMN_PET_NAME+"\t"+ PetContract.PetEntry.COLUMN_PET_BREED+"\t"+ PetContract.PetEntry.COLUMN_PET_GENDER+"\t"+ PetContract.PetEntry.COLUMN_PET_WEIGHT);
             //Extract the column index in cursor by using getColumnIndex
@@ -88,7 +88,7 @@ public class CatalogActivity extends AppCompatActivity {
              String pet_breed=cursor.getString(breedColumnIndex);
              int pet_gender=cursor.getInt(genderColumnIndex);
              int pet_weight=cursor.getInt(weightColumnIndex);
-             displayView.append("\n"+pet_id+"\t"+pet_name+"\t"+pet_breed+"\t"+pet_gender"\t"+pet_weight+"\n");
+             displayView.append("\n"+pet_id+"\t"+pet_name+"\t"+pet_breed+"\t"+pet_gender+"\t"+pet_weight+"\n");
             }
         } finally {
             // Always close the cursor when you're done reading from it. This releases all its
