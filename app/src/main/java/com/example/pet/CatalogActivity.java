@@ -22,7 +22,6 @@ public class CatalogActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_catalog);
-
         // Setup FAB to open EditorActivity
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -61,15 +60,36 @@ public class CatalogActivity extends AppCompatActivity {
 
         // Create and/or open a database to read from it
         SQLiteDatabase db = mDbHelper.getReadableDatabase();
-
+/**
         // Perform this raw SQL query "SELECT * FROM pets"
         // to get a Cursor that contains all rows from the pets table.
-        Cursor cursor = db.rawQuery("SELECT * FROM " + PetContract.PetEntry.TABLE_NAME, null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + PetContract.PetEntry.TABLE_NAME, null);*/
+//TO READ FROM DATABASE QUERY METHOD IS USED TO AVOID ERROR while riting sql query as a constant
+        Cursor cursor=db.query(PetContract.PetEntry.TABLE_NAME,null,null,null,null,null,null);
         try {
             // Display the number of rows in the Cursor (which reflects the number of rows in the
             // pets table in the database).
             TextView displayView = (TextView) findViewById(R.id.text_view_pet);
             displayView.setText("Number of rows in pets database table: " + cursor.getCount());
+            //column names are just addded by appending
+            displayView.append("\n"+PetContract.PetEntry._Id+"\t"+ PetContract.PetEntry.COLUMN_PET_NAME+"\t"+ PetContract.PetEntry.COLUMN_PET_BREED+"\t"+ PetContract.PetEntry.COLUMN_PET_GENDER+"\t"+ PetContract.PetEntry.COLUMN_PET_WEIGHT);
+            //Extract the column index in cursor by using getColumnIndex
+            int _idColumnIndex=cursor.getColumnIndex(PetContract.PetEntry._Id);
+            int nameColumnIndex=cursor.getColumnIndex(PetContract.PetEntry.COLUMN_PET_NAME);
+            int weightColumnIndex=cursor.getColumnIndex(PetContract.PetEntry.COLUMN_PET_WEIGHT);
+            int breedColumnIndex=cursor.getColumnIndex(PetContract.PetEntry.COLUMN_PET_BREED);
+            int  genderColumnIndex=cursor.getColumnIndex(PetContract.PetEntry.COLUMN_PET_GENDER);
+            //iterate the cursor to travel throughout the table of daytabase by using cursor by using moveToNext()
+            while(cursor.moveToNext())
+            {
+                //Extracting the value of current cursor and store it in variable
+             int pet_id=cursor.getInt(_idColumnIndex);
+             String pet_name=cursor.getString(nameColumnIndex);
+             String pet_breed=cursor.getString(breedColumnIndex);
+             int pet_gender=cursor.getInt(genderColumnIndex);
+             int pet_weight=cursor.getInt(weightColumnIndex);
+             displayView.append("\n"+pet_id+"\t"+pet_name+"\t"+pet_breed+"\t"+pet_gender"\t"+pet_weight+"\n");
+            }
         } finally {
             // Always close the cursor when you're done reading from it. This releases all its
             // resources and makes it invalid.

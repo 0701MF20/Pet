@@ -110,9 +110,14 @@ public class EditorActivity extends AppCompatActivity {
      values2.put(PetContract.PetEntry.COLUMN_PET_GENDER,mGender);
      values2.put(PetContract.PetEntry.COLUMN_PET_WEIGHT,weights);
      //for inserting contentValues in database
-     db.insert(PetContract.PetEntry.TABLE_NAME,null,values2);
-     Toast.makeText(this,"Pet saved with Id:"+(++count),Toast.LENGTH_SHORT).show();
-
+     long id=db.insert(PetContract.PetEntry.TABLE_NAME,null,values2);
+     if(id==-1)
+     {
+         Toast.makeText(this,"Error with saving pet",Toast.LENGTH_SHORT).show();
+     }
+     else {
+         Toast.makeText(this, "Pet saved with Id:" + (++count), Toast.LENGTH_SHORT).show();
+     }
  }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
