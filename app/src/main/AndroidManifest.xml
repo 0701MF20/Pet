@@ -28,6 +28,10 @@ xmlns:android="http://schemas.android.com/apk/res/android">
             android:name="android.support.PARENT_ACTIVITY"
             android:value=".CatalogActivity" />
     </activity>
+    <provider
+        android:authorities="com.example.pet"
+        android:name=".data.PetProvider"
+        android:exported="false"/>
 </application>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 </manifest>
