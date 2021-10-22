@@ -23,7 +23,7 @@ public class PetProvider extends ContentProvider {
      * The input passed into the constructor represents the code to return for the root URI.
      * It's common to use NO_MATCH as the input for this case.
      */
-//for declaring Urimatcher and declared as static
+//for declaring Urimatcher and declared as static AND WE DECLARED IT FINAL SO THAT NO ONE CAN CAN AC
 public static final UriMatcher sUriMatcher=new UriMatcher(UriMatcher.NO_MATCH);
 static {
     //1st parrameter is content authority , 2nd parameter is path and last parameter is alloted code constant
