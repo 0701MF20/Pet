@@ -210,8 +210,26 @@ private PetDbHelper mDbHelpers;
      * Delete the data at the given selection and selection arguments.
      */
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs) {
-        return 0;
+    public int delete(Uri uri, String selection, String[] selectionArgs)
+    {
+        //get writable database
+        SQLiteDatabase db=mDbHelpers.getWritableDatabase();
+        int match=sUriMatcher.match(uri);
+        switch (match)
+        {
+            //FOR ALL TABLE ROW
+            case PET_ID:
+                // Delete all rows that match the selection and selection args
+                return db.delete(PetContract.PetEntry.TABLE_NAME,selection,selectionArgs);
+                //FOR SINGLE ROW OF TABLE
+            case PETS:
+                // Delete a single row given by the ID in the URI
+                selection= PetContract.PetEntry._Id+"=?";
+                selectionArgs=new String[]{String.valueOf(ContentUris.parseId(uri))};
+                return db.delete(PetContract.PetEntry.TABLE_NAME,selection,selectionArgs);
+            default:
+                throw new IllegalArgumentException("Deletion is not supported for"+uri);
+        }
     }
 
     /**
