@@ -79,6 +79,30 @@ private PetDbHelper mDbHelpers;
      */
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
+        //Sanity checkings:-
+
+        //sanity checking for name (name cannot be null if null then throw illegal argument exception)
+        String sanityName=contentValues.getAsString(PetContract.PetEntry.COLUMN_PET_NAME);
+        if(sanityName==null)
+        {
+            throw new IllegalArgumentException("Pet is must to proceed further storing the pet ");
+        }
+        //sanity checking for breed is not required as breed is not required for inserting the pet information.
+
+        //sanity checking for gender(gender can not be null or any other gender integer other than unkown,female and male thus in that case illegalArgumentException
+        Integer sanityGender=contentValues.getAsInteger(PetContract.PetEntry.COLUMN_PET_GENDER);
+        if(sanityGender==null|| !PetContract.PetEntry.validGender(sanityGender))
+        {
+            throw new IllegalArgumentException("Pet must have valid gender");
+        }
+
+        //sanity checking for weight (weight can be null and if null then weight is default  0(already finished this part by creating table of database in pet dbHelper) ,weight should not null and negattive then we have to proceed for sanity checking
+        Integer sanityWeight=contentValues.getAsInteger(PetContract.PetEntry.COLUMN_PET_WEIGHT);
+        if((sanityWeight!=null)&&(sanityWeight<0))
+        {
+            throw new IllegalArgumentException("Pet must have valid weight and it should be positive");
+        }
+
         // Get writeable database
         SQLiteDatabase db=mDbHelpers.getWritableDatabase();
         //match the uri and extract the code associated with uri
