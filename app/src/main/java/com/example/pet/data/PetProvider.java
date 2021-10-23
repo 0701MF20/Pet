@@ -240,12 +240,14 @@ private PetDbHelper mDbHelpers;
         final int match=sUriMatcher.match(uri);
         switch (match)
         {
+            //for list of pets
             case PET_ID:
                return PetContract.PetEntry.CONTENT_LIST_TYPE;
+               //for single pet
             case PETS:
                 return PetContract.PetEntry.CONTENT_ITEM_TYPE;
             default:
-                throw new IllegalArgumentException("Unkown URI "+uri+" with match "+match);
+                throw new IllegalArgumentException("Unknown URI "+uri+" with match "+match);
         }
     }
 }
