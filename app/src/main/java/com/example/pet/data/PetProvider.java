@@ -6,9 +6,6 @@ import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
-import android.renderscript.Sampler;
-
-import com.example.pet.CatalogActivity;
 
 public class PetProvider extends ContentProvider {
     /**Tag for the log messgaes*/
