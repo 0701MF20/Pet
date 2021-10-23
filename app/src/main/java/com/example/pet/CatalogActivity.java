@@ -35,21 +35,25 @@ public class CatalogActivity extends AppCompatActivity {
 
         displayDatabaseInfo();
     }
+    /**
+     * Helper method to insert hardcoded pet data into the database. For debugging purposes only.
+     */
+
     private void insert()
     {
-        //instance of PetDBhELlper
-    //    PetDbHelper mDbHelper=new PetDbHelper(this);
-        //create or open the database
-     //   SQLiteDatabase db=mDbHelper.getWritableDatabase();
         //using content values to for row1
         ContentValues values=new ContentValues();
         //inserting values for row 1
+        //Create a ContentValues object where column names are the keys,
+        // and Toto's pet attributes are the values.
         values.put(PetContract.PetEntry.COLUMN_PET_NAME,"Toto");
         values.put(PetContract.PetEntry.COLUMN_PET_GENDER,PetContract.PetEntry.GENDER_MALE);
         values.put(PetContract.PetEntry.COLUMN_PET_BREED,"Terrier");
         values.put(PetContract.PetEntry.COLUMN_PET_WEIGHT,7);
-
-      //  db.insert(PetContract.PetEntry.TABLE_NAME,null,values);
+        // Insert a new row for Toto into the provider using the ContentResolver.
+        // Use the {@link PetEntry#CONTENT_URI} to indicate that we want to insert
+        // into the pets database table.
+        // Receive the new content URI that will allow us to access Toto's data in the future.
         Uri uri1=getContentResolver().insert(PetContract.PetEntry.CONTENT_URI,values);
     }
     /**

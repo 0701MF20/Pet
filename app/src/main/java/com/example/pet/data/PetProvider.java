@@ -74,20 +74,24 @@ private PetDbHelper mDbHelpers;
     }
 
     /**
-     * Insert new data into the provider with the given ContentValues.
+     * Insert a pet into the database with the given content values. Return the new content URI
+     * for that specific row in the database.
      */
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
-        //create writable database
+        // Get writeable database
         SQLiteDatabase db=mDbHelpers.getWritableDatabase();
         //match the uri and extract the code associated with uri
         int match=sUriMatcher.match(uri);
+        // Insert the new pet with the given values
         long ids;
         Uri uriss=null;
         switch(match)
         {
             case PET_ID:
                 ids=db.insert(PetContract.PetEntry.TABLE_NAME,null,contentValues);
+                // Once we know the ID of the new row in the table,
+                // return the new URI with the ID appended to the end of it
             uriss=ContentUris.withAppendedId(PetContract.PetEntry.CONTENT_URI,ids);
            break;
             default:

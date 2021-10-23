@@ -52,5 +52,8 @@
         <item>@string/gender_male</item>
         <item>@string/gender_female</item>
     </string-array>
-
+    <!--Pet is not saved!-->
+    <string name="pet_insertion_error">Pet is not saved:Error encounter</string>
+    <!--Pet is saved!-->
+    <string name="pet_insertion_successful">Pet is saved</string>
 </resources>

@@ -96,38 +96,39 @@ public class EditorActivity extends AppCompatActivity {
         });
     }
 
-
+    /**
+     * Get user input from editor and save new pet into database.
+     */
     private void insertPet()
  {
+
+     // Read from input fields
+     // Use trim to eliminate leading or trailing white space
      String name=mNameEditText.getText().toString().trim();
      String breed=mBreedEditText.getText().toString().trim();
      int weights=Integer.parseInt(mWeightEditText.getText().toString().trim());
-    // PetDbHelper mPetDbHelper=new PetDbHelper(this);
-     //SQLiteDatabase db=mPetDbHelper.getWritableDatabase();
+
+     // Create a ContentValues object where column names are the keys,
+     // and pet attributes from the editor are the values.
      //content value
      ContentValues values2=new ContentValues();
      values2.put(PetContract.PetEntry.COLUMN_PET_NAME,name);
      values2.put(PetContract.PetEntry.COLUMN_PET_BREED,breed);
      values2.put(PetContract.PetEntry.COLUMN_PET_GENDER,mGender);
      values2.put(PetContract.PetEntry.COLUMN_PET_WEIGHT,weights);
-     //for inserting contentValues in database
-     /*long id=db.insert(PetContract.PetEntry.TABLE_NAME,null,values2);
-     if(id==-1)
-     {
-         Toast.makeText(this,"Error with saving pet",Toast.LENGTH_SHORT).show();
-     }
-     else {
-         Toast.makeText(this, "Pet saved with Id:" + (++count), Toast.LENGTH_SHORT).show();
-     }*/
+
      //for inserting content values
      Uri urii=getContentResolver().insert(PetContract.PetEntry.CONTENT_URI,values2);
      if(urii==null)
      {
-         Toast.makeText(this,"Pet is not saved:Error encounter",Toast.LENGTH_SHORT).show();
+         // If the new content URI is null, then there was an error with insertion.
+
+         Toast.makeText(this,R.string.pet_insertion_error,Toast.LENGTH_SHORT).show();
      }
      else
      {
-         Toast.makeText(this,"Pet is saved",Toast.LENGTH_SHORT).show();
+         // Otherwise, the insertion was successful and we can display a toast.
+         Toast.makeText(this,R.string.pet_insertion_successful,Toast.LENGTH_SHORT).show();
      }
  }
     @Override
