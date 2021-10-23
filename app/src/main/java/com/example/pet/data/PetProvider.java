@@ -126,7 +126,84 @@ private PetDbHelper mDbHelpers;
      */
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
-        return 0;
+
+        //sanity checking
+        //now check for uri matcher
+        int match=sUriMatcher.match(uri);
+
+        switch (match)
+        {//for whole table
+            case PET_ID:
+               return updatePet(uri,contentValues,selection,selectionArgs);
+            // For the PETS code, extract out the ID from the URI,
+            // so we know which row to update. Selection will be "_id=?" and selection
+            // arguments will be a String array containing the actual ID.
+               //for single rows
+                case PETS:
+                    selection= PetContract.PetEntry._Id+"=?";
+                    selectionArgs=new String[]{String.valueOf(ContentUris.parseId(uri))};
+                    return updatePet(uri,contentValues,selection,selectionArgs);
+            default:
+                throw new IllegalArgumentException("Update is not supported for"+uri);
+        }
+    }
+    /**
+     * Update pets in the database with the given content values. Apply the changes to the rows
+     * specified in the selection and selection arguments (which could be 0 or 1 or more pets).
+     * Return the number of rows that were successfully updated.
+     */
+    private int updatePet(Uri uri,ContentValues contentValues,String selection,String[] selectionArgs)
+    {
+        //first atleast check whether the contentvalues contain that key before doing data validation because there is possibility in update sql commmand
+        //that column is not present
+        //ContentValues.containkey(String key) return boolean
+        //for checking whwether key value is present in content values
+        // If the {@link PetEntry#COLUMN_PET_NAME} key is present,
+        // check that the name value is not null.
+        if(contentValues.containsKey(PetContract.PetEntry.COLUMN_PET_NAME))
+        {
+            //for name
+            String sanityName=contentValues.getAsString(PetContract.PetEntry.COLUMN_PET_NAME);
+            if(sanityName==null)
+            {
+                throw new IllegalArgumentException("Name of Pet is must");
+            }
+
+        }
+        // If the {@link PetEntry#COLUMN_PET_GENDER} key is present,
+        // check that the gender value is valid.
+        if(contentValues.containsKey(PetContract.PetEntry.COLUMN_PET_GENDER))
+        {//for gender
+            Integer sanityGender=contentValues.getAsInteger(PetContract.PetEntry.COLUMN_PET_GENDER);
+            if(sanityGender==null|| !PetContract.PetEntry.validGender(sanityGender))
+            {
+                throw new IllegalArgumentException("Gender name must b");
+            }
+        }
+        // If the {@link PetEntry#COLUMN_PET_WEIGHT} key is present,
+        // check that the weight value is valid.
+        if(contentValues.containsKey(PetContract.PetEntry.COLUMN_PET_WEIGHT))
+        {
+            //for weight
+            Integer sanityWeight=contentValues.getAsInteger(PetContract.PetEntry.COLUMN_PET_WEIGHT);
+            if(sanityWeight!=null&&sanityWeight>0)
+            {
+                throw new IllegalArgumentException("Weight must be positive");
+            }
+        }
+
+        // No need to check the breed, any value is valid (including null).
+
+        // If there are no values to update, then don't try to update the database
+        //if there is no value change in content value then does not change anything
+        if(contentValues.size()==0)
+        {
+            return 0;
+        }
+        // Otherwise, get writeable database to update the data
+        SQLiteDatabase db=mDbHelpers.getWritableDatabase();
+        // Returns the number of database rows affected by the update statement
+        return db.update(PetContract.PetEntry.TABLE_NAME,contentValues,selection,selectionArgs);
     }
 
     /**
