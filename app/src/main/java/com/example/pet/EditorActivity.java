@@ -1,6 +1,7 @@
 package com.example.pet;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 //import android.support.v4.app.NavUtils;
 import androidx.appcompat.app.AppCompatActivity;
@@ -101,8 +102,8 @@ public class EditorActivity extends AppCompatActivity {
      String name=mNameEditText.getText().toString().trim();
      String breed=mBreedEditText.getText().toString().trim();
      int weights=Integer.parseInt(mWeightEditText.getText().toString().trim());
-     PetDbHelper mPetDbHelper=new PetDbHelper(this);
-     SQLiteDatabase db=mPetDbHelper.getWritableDatabase();
+    // PetDbHelper mPetDbHelper=new PetDbHelper(this);
+     //SQLiteDatabase db=mPetDbHelper.getWritableDatabase();
      //content value
      ContentValues values2=new ContentValues();
      values2.put(PetContract.PetEntry.COLUMN_PET_NAME,name);
@@ -110,13 +111,23 @@ public class EditorActivity extends AppCompatActivity {
      values2.put(PetContract.PetEntry.COLUMN_PET_GENDER,mGender);
      values2.put(PetContract.PetEntry.COLUMN_PET_WEIGHT,weights);
      //for inserting contentValues in database
-     long id=db.insert(PetContract.PetEntry.TABLE_NAME,null,values2);
+     /*long id=db.insert(PetContract.PetEntry.TABLE_NAME,null,values2);
      if(id==-1)
      {
          Toast.makeText(this,"Error with saving pet",Toast.LENGTH_SHORT).show();
      }
      else {
          Toast.makeText(this, "Pet saved with Id:" + (++count), Toast.LENGTH_SHORT).show();
+     }*/
+     //for inserting content values
+     Uri urii=getContentResolver().insert(PetContract.PetEntry.CONTENT_URI,values2);
+     if(urii==null)
+     {
+         Toast.makeText(this,"Pet is not saved:Error encounter",Toast.LENGTH_SHORT).show();
+     }
+     else
+     {
+         Toast.makeText(this,"Pet is saved",Toast.LENGTH_SHORT).show();
      }
  }
     @Override

@@ -48,7 +48,7 @@ private PetDbHelper mDbHelpers;
      * Perform the query for the given URI. Use the given projection, selection, selection arguments, and sort order.
      */
     @Override
-    public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs, String sortOrder) {
+    public Cursor query(Uri uri, String[] projection, String selection,String[] selectionArgs, String sortOrder) {
         //sqlite database is object is created and get readable method is called
         SQLiteDatabase db=mDbHelpers.getReadableDatabase();
         //cursor
@@ -78,7 +78,22 @@ private PetDbHelper mDbHelpers;
      */
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
-        return null;
+        //create writable database
+        SQLiteDatabase db=mDbHelpers.getWritableDatabase();
+        //match the uri and extract the code associated with uri
+        int match=sUriMatcher.match(uri);
+        long ids;
+        Uri uriss=null;
+        switch(match)
+        {
+            case PET_ID:
+                ids=db.insert(PetContract.PetEntry.TABLE_NAME,null,contentValues);
+            uriss=ContentUris.withAppendedId(PetContract.PetEntry.CONTENT_URI,ids);
+           break;
+            default:
+              throw new IllegalArgumentException("Cannot insert the row"+uri);
+        }
+        return uriss;
     }
 
     /**

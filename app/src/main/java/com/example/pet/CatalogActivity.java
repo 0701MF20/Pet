@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import android.view.Menu;
@@ -37,9 +38,9 @@ public class CatalogActivity extends AppCompatActivity {
     private void insert()
     {
         //instance of PetDBhELlper
-        PetDbHelper mDbHelper=new PetDbHelper(this);
+    //    PetDbHelper mDbHelper=new PetDbHelper(this);
         //create or open the database
-        SQLiteDatabase db=mDbHelper.getWritableDatabase();
+     //   SQLiteDatabase db=mDbHelper.getWritableDatabase();
         //using content values to for row1
         ContentValues values=new ContentValues();
         //inserting values for row 1
@@ -47,7 +48,9 @@ public class CatalogActivity extends AppCompatActivity {
         values.put(PetContract.PetEntry.COLUMN_PET_GENDER,PetContract.PetEntry.GENDER_MALE);
         values.put(PetContract.PetEntry.COLUMN_PET_BREED,"Terrier");
         values.put(PetContract.PetEntry.COLUMN_PET_WEIGHT,7);
-        db.insert(PetContract.PetEntry.TABLE_NAME,null,values);
+
+      //  db.insert(PetContract.PetEntry.TABLE_NAME,null,values);
+        Uri uri1=getContentResolver().insert(PetContract.PetEntry.CONTENT_URI,values);
     }
     /**
      * Temporary helper method to display information in the onscreen TextView about the state of
@@ -56,16 +59,17 @@ public class CatalogActivity extends AppCompatActivity {
     private void displayDatabaseInfo() {
         // To access our database, we instantiate our subclass of SQLiteOpenHelper
         // and pass the context, which is the current activity.
-        PetDbHelper mDbHelper = new PetDbHelper(this);
+     //   PetDbHelper mDbHelper = new PetDbHelper(this);
 
         // Create and/or open a database to read from it
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+       // SQLiteDatabase db = mDbHelper.getReadableDatabase();
+Cursor cursor=getContentResolver().query(PetContract.PetEntry.CONTENT_URI,null,null,null,null);
 /**
         // Perform this raw SQL query "SELECT * FROM pets"
         // to get a Cursor that contains all rows from the pets table.
         Cursor cursor = db.rawQuery("SELECT * FROM " + PetContract.PetEntry.TABLE_NAME, null);*/
 //TO READ FROM DATABASE QUERY METHOD IS USED TO AVOID ERROR while riting sql query as a constant
-        Cursor cursor=db.query(PetContract.PetEntry.TABLE_NAME,null,null,null,null,null,null);
+   //     Cursor cursor=db.query(PetContract.PetEntry.TABLE_NAME,null,null,null,null,null,null);
         try {
             // Display the number of rows in the Cursor (which reflects the number of rows in the
             // pets table in the database).
