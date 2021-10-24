@@ -90,8 +90,10 @@ public class CatalogActivity extends AppCompatActivity {
             ListView listView=(ListView)findViewById(R.id.PetListViewId);
             PetCursorAdapter petCursorAdapter=new PetCursorAdapter(this,cursor);
             listView.setAdapter(petCursorAdapter);
+            View emptyView=(View)findViewById(R.id.EmptyListView);
+            listView.setEmptyView(emptyView);
       //here do not need to close the cursor because if the cursor is pointing to some useless uri then it actually breaks the flow and by the way usage of why cursor is not closed
-      //actually i think cusor adaptor will automatically close the cursor when we do not need it so.
+      //actually i think cursor adaptor will automatically close the cursor when we do not need it so.
     }
 //so after exiting the from the activity it will display the databse info
     @Override

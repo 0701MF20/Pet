@@ -10,7 +10,43 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:padding="@dimen/activity_margin"/>
-!-->
+!--><RelativeLayout
+    android:id="@+id/EmptyListView"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    >
+    <ImageView
+       android:id="@+id/emptyPetId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:src="@drawable/ic_empty_shelter"
+        />
+    <TextView
+        android:id="@+id/subtitleEmptyId"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/emptyPetId"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="sans-serif-medium"
+        android:paddingTop="16dp"
+        android:text="@string/empty_view_title_text"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textStyle="bold"/>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/subtitleEmptyId"
+        android:layout_centerHorizontal="true"
+        android:fontFamily="sans-serif-medium"
+        android:paddingTop="16dp"
+        android:text="@string/empty_view_subtitle_text"
+        android:textAppearance="?android:textAppearanceMedium"
+        android:textColor="#A2AAB0"
+        android:textStyle="bold"
+        />
+</RelativeLayout>
+
     <ListView
         android:id="@+id/PetListViewId"
         android:layout_width="match_parent"
