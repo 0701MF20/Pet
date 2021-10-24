@@ -76,22 +76,22 @@ public class CatalogActivity extends AppCompatActivity {
 
         // Create and/or open a database to read from it
        // SQLiteDatabase db = mDbHelper.getReadableDatabase();
-Cursor cursor=getContentResolver().query(PetContract.PetEntry.CONTENT_URI,null,null,null,null);
+        Cursor cursor=getContentResolver().query(PetContract.PetEntry.CONTENT_URI,
+        null,
+        null,
+        null,
+        null);
 /**
         // Perform this raw SQL query "SELECT * FROM pets"
         // to get a Cursor that contains all rows from the pets table.
         Cursor cursor = db.rawQuery("SELECT * FROM " + PetContract.PetEntry.TABLE_NAME, null);*/
-        try {
+
             //there is no need to moveToNext() FUNCTION TO MOVE THE CURSOR ACTUALLY Cursor actually customized cursor adapter automatically move it to next place
             ListView listView=(ListView)findViewById(R.id.PetListViewId);
             PetCursorAdapter petCursorAdapter=new PetCursorAdapter(this,cursor);
             listView.setAdapter(petCursorAdapter);
-
-        } finally {
-            // Always close the cursor when you're done reading from it. This releases all its
-            // resources and makes it invalid.
-            cursor.close();
-        }
+      //here do not need to close the cursor because if the cursor is pointing to some useless uri then it actually breaks the flow and by the way usage of why cursor is not closed
+      //actually i think cusor adaptor will automatically close the cursor when we do not need it so.
     }
 //so after exiting the from the activity it will display the databse info
     @Override
