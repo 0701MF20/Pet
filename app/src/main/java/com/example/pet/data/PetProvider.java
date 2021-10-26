@@ -1,3 +1,4 @@
+//i have used deprecated Cursor loader so please keep in mind
 package com.example.pet.data;
 import android.content.ContentProvider;
 import android.content.ContentResolver;
@@ -68,8 +69,9 @@ private PetDbHelper mDbHelpers;
           default:
          throw new IllegalArgumentException("Cannot Query unknown URI"+uri);
       }
-      //to provide us the notification about the uri for a cursor
-     // cursor.setNotificationUri(getContext().getContentResolver(),uri);
+      //to provide us the notification about the uri for a cursor and it acts as a listner to listen the changes that occur by default or update or delete in order to prevent unnecessary loading
+        cursor.setNotificationUri(getContext().getContentResolver(),uri);//it is just like listening noise
+
       return cursor;
     }
 
@@ -121,6 +123,8 @@ private PetDbHelper mDbHelpers;
             default:
               throw new IllegalArgumentException("Cannot insert the row"+uri);
         }
+        //notify about if any change occur(in local term it is sound)
+        getContext().getContentResolver().notifyChange(uri,null);
         //notify the changes to all the listener to tell then some row is edited
        // getContext().getContentResolver().notifyChange(uri,null);
        return uriss;
@@ -132,6 +136,7 @@ private PetDbHelper mDbHelpers;
     @Override
     public int update(Uri uri, ContentValues contentValues, String selection, String[] selectionArgs) {
 
+        int updatedRow=0;
         //sanity checking
         //now check for uri matcher
         int match=sUriMatcher.match(uri);
@@ -139,18 +144,29 @@ private PetDbHelper mDbHelpers;
         switch (match)
         {//for whole table
             case PET_ID:
-               return updatePet(uri,contentValues,selection,selectionArgs);
-            // For the PETS code, extract out the ID from the URI,
+                //notify about if any change occur(in local term it is sound)
+
+               updatedRow=updatePet(uri,contentValues,selection,selectionArgs);
+            break;
+               // For the PETS code, extract out the ID from the URI,
             // so we know which row to update. Selection will be "_id=?" and selection
             // arguments will be a String array containing the actual ID.
                //for single rows
                 case PETS:
                     selection= PetContract.PetEntry._Id+"=?";
                     selectionArgs=new String[]{String.valueOf(ContentUris.parseId(uri))};
-                    return updatePet(uri,contentValues,selection,selectionArgs);
-            default:
+
+                    updatedRow= updatePet(uri,contentValues,selection,selectionArgs);
+            break;
+                    default:
                 throw new IllegalArgumentException("Update is not supported for"+uri);
         }
+        if(updatedRow!=0)
+        {
+            //notify about if any change occur(in local term it is sound)
+            getContext().getContentResolver().notifyChange(uri,null);
+        }
+        return updatedRow;
     }
     /**
      * Update pets in the database with the given content values. Apply the changes to the rows
@@ -217,6 +233,8 @@ private PetDbHelper mDbHelpers;
     @Override
     public int delete(Uri uri, String selection, String[] selectionArgs)
     {
+        //row deleted
+        int rowDeleted;
         //get writable database
         SQLiteDatabase db=mDbHelpers.getWritableDatabase();
         int match=sUriMatcher.match(uri);
@@ -225,16 +243,24 @@ private PetDbHelper mDbHelpers;
             //FOR ALL TABLE ROW
             case PET_ID:
                 // Delete all rows that match the selection and selection args
-                return db.delete(PetContract.PetEntry.TABLE_NAME,selection,selectionArgs);
+                rowDeleted=db.delete(PetContract.PetEntry.TABLE_NAME,selection,selectionArgs);
+               break;
                 //FOR SINGLE ROW OF TABLE
             case PETS:
                 // Delete a single row given by the ID in the URI
                 selection= PetContract.PetEntry._Id+"=?";
                 selectionArgs=new String[]{String.valueOf(ContentUris.parseId(uri))};
-                return db.delete(PetContract.PetEntry.TABLE_NAME,selection,selectionArgs);
+                rowDeleted=db.delete(PetContract.PetEntry.TABLE_NAME,selection,selectionArgs);
+                break;
             default:
                 throw new IllegalArgumentException("Deletion is not supported for"+uri);
         }
+        if(rowDeleted!=0)
+        {
+            //notify about if any change occur(in local term it is sound)
+            getContext().getContentResolver().notifyChange(uri,null);
+        }
+        return rowDeleted;
     }
 
     /**
