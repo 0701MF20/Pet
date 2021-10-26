@@ -1,12 +1,16 @@
 package com.example.pet;
-import android.annotation.SuppressLint;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
+
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +25,8 @@ import java.util.List;
 /**
  * Displays list of pets that were entered and stored in the app.
  */
-public class CatalogActivity extends AppCompatActivity {
-
+public class CatalogActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+    PetCursorAdapter petCursorAdapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -37,6 +41,7 @@ public class CatalogActivity extends AppCompatActivity {
             }
         });
 
+        getLoaderManager().initLoader(0,null,this);
         displayDatabaseInfo();
     }
     /**
@@ -88,7 +93,7 @@ public class CatalogActivity extends AppCompatActivity {
 
             //there is no need to moveToNext() FUNCTION TO MOVE THE CURSOR ACTUALLY Cursor actually customized cursor adapter automatically move it to next place
             ListView listView=(ListView)findViewById(R.id.PetListViewId);
-            PetCursorAdapter petCursorAdapter=new PetCursorAdapter(this,cursor);
+            petCursorAdapter=new PetCursorAdapter(this,cursor);
             listView.setAdapter(petCursorAdapter);
             View emptyView=(View)findViewById(R.id.EmptyListView);
             listView.setEmptyView(emptyView);
@@ -125,5 +130,25 @@ public class CatalogActivity extends AppCompatActivity {
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id,Bundle args) {
+
+        String[] projections=new String[]{PetContract.PetEntry._Id, PetContract.PetEntry.COLUMN_PET_NAME, PetContract.PetEntry.COLUMN_PET_GENDER};
+        CursorLoader cursorLoader=new CursorLoader(getApplicationContext(), PetContract.PetEntry.CONTENT_URI,projections,null,null,null);
+        return cursorLoader;
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        petCursorAdapter.swapCursor(data);
+
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+     petCursorAdapter.swapCursor(null);
     }
 }
