@@ -1,5 +1,6 @@
 package com.example.pet.data;
 import android.content.ContentProvider;
+import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.UriMatcher;
@@ -67,6 +68,8 @@ private PetDbHelper mDbHelpers;
           default:
          throw new IllegalArgumentException("Cannot Query unknown URI"+uri);
       }
+      //to provide us the notification about the uri for a cursor
+     // cursor.setNotificationUri(getContext().getContentResolver(),uri);
       return cursor;
     }
 
@@ -105,20 +108,22 @@ private PetDbHelper mDbHelpers;
         //match the uri and extract the code associated with uri
         int match=sUriMatcher.match(uri);
         // Insert the new pet with the given values
-        long ids;
-        Uri uriss=null;
+        //long ids;
+       Uri uriss=null;
         switch(match)
         {
             case PET_ID:
-                ids=db.insert(PetContract.PetEntry.TABLE_NAME,null,contentValues);
+              long ids=db.insert(PetContract.PetEntry.TABLE_NAME,null,contentValues);
                 // Once we know the ID of the new row in the table,
                 // return the new URI with the ID appended to the end of it
-            uriss=ContentUris.withAppendedId(PetContract.PetEntry.CONTENT_URI,ids);
+           uriss=ContentUris.withAppendedId(PetContract.PetEntry.CONTENT_URI,ids);
            break;
             default:
               throw new IllegalArgumentException("Cannot insert the row"+uri);
         }
-        return uriss;
+        //notify the changes to all the listener to tell then some row is edited
+       // getContext().getContentResolver().notifyChange(uri,null);
+       return uriss;
     }
 
     /**

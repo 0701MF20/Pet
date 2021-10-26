@@ -2,31 +2,27 @@ package com.example.pet;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
-
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
-
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.TextView;
 import com.example.pet.data.PetContract;
-import com.example.pet.data.PetDbHelper;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+//these import statement are import as it takes me an our to find this error
 
-import java.util.List;
 
 /**
  * Displays list of pets that were entered and stored in the app.
  */
-public class CatalogActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-    PetCursorAdapter petCursorAdapter;
+public class CatalogActivity extends AppCompatActivity implements androidx.loader.app.LoaderManager.LoaderCallbacks<Cursor> {
+    private static final int PET_LOADER_ID=0;
+  PetCursorAdapter petCursorAdapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,9 +36,19 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
                 startActivity(intent);
             }
         });
+//ListView
+        ListView listView=(ListView)findViewById(R.id.PetListViewId);
+        //empty view
+        View emptyView=findViewById(R.id.EmptyListView);
 
-        getLoaderManager().initLoader(0,null,this);
-        displayDatabaseInfo();
+        listView.setEmptyView(emptyView);
+        //pet cursor adapter should be null because initailly we have to set to null
+
+        petCursorAdapter=new PetCursorAdapter(this,null);
+        listView.setAdapter(petCursorAdapter);
+        //noinspection deprecation
+        getSupportLoaderManager().initLoader(PET_LOADER_ID, null, this);
+
     }
     /**
      * Helper method to insert hardcoded pet data into the database. For debugging purposes only.
@@ -73,40 +79,13 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
      * Temporary helper method to display information in the onscreen TextView about the state of
      * the pets database.
      */
-    private void displayDatabaseInfo() {
-
-        // To access our database, we instantiate our subclass of SQLiteOpenHelper
-        // and pass the context, which is the current activity.
-     //   PetDbHelper mDbHelper = new PetDbHelper(this);
-
-        // Create and/or open a database to read from it
-       // SQLiteDatabase db = mDbHelper.getReadableDatabase();
-        Cursor cursor=getContentResolver().query(PetContract.PetEntry.CONTENT_URI,
-        null,
-        null,
-        null,
-        null);
-/**
-        // Perform this raw SQL query "SELECT * FROM pets"
-        // to get a Cursor that contains all rows from the pets table.
-        Cursor cursor = db.rawQuery("SELECT * FROM " + PetContract.PetEntry.TABLE_NAME, null);*/
-
-            //there is no need to moveToNext() FUNCTION TO MOVE THE CURSOR ACTUALLY Cursor actually customized cursor adapter automatically move it to next place
-            ListView listView=(ListView)findViewById(R.id.PetListViewId);
-            petCursorAdapter=new PetCursorAdapter(this,cursor);
-            listView.setAdapter(petCursorAdapter);
-            View emptyView=(View)findViewById(R.id.EmptyListView);
-            listView.setEmptyView(emptyView);
-      //here do not need to close the cursor because if the cursor is pointing to some useless uri then it actually breaks the flow and by the way usage of why cursor is not closed
-      //actually i think cursor adaptor will automatically close the cursor when we do not need it so.
-    }
-//so after exiting the from the activity it will display the databse info
+/*
     @Override
     protected void onStart() {
         super.onStart();
-        displayDatabaseInfo();
-    }
 
+    }
+*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu options from the res/menu/menu_catalog.xml file.
@@ -120,35 +99,37 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
         switch (item.getItemId()) {
             // Respond to a click on the "Insert dummy data" menu option
             case R.id.action_insert_dummy_data:
-                //Inserting data or row 1
                 insert();
-                displayDatabaseInfo();
-                return true;
+            break;
+               // return true;
             // Respond to a click on the "Delete all entries" menu option
             case R.id.action_delete_all_entries:
                 // Do nothing for now
-                return true;
+                //return true;
+                break;
         }
         return super.onOptionsItemSelected(item);
     }
 
 
     @Override
-    public Loader<Cursor> onCreateLoader(int id,Bundle args) {
-
-        String[] projections=new String[]{PetContract.PetEntry._Id, PetContract.PetEntry.COLUMN_PET_NAME, PetContract.PetEntry.COLUMN_PET_GENDER};
-        CursorLoader cursorLoader=new CursorLoader(getApplicationContext(), PetContract.PetEntry.CONTENT_URI,projections,null,null,null);
-        return cursorLoader;
-    }
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        String[] projections={
+                PetContract.PetEntry._Id,
+                PetContract.PetEntry.COLUMN_PET_NAME,
+                PetContract.PetEntry.COLUMN_PET_BREED};
+        return new CursorLoader(this, PetContract.PetEntry.CONTENT_URI,projections,null,null,null);
+        }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(androidx.loader.content.Loader<Cursor> loader, Cursor data) {
         petCursorAdapter.swapCursor(data);
-
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
-     petCursorAdapter.swapCursor(null);
+    public void onLoaderReset(androidx.loader.content.Loader<Cursor> loader) {
+        petCursorAdapter.swapCursor(null);
+
     }
+
 }
