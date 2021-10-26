@@ -10,6 +10,7 @@ import androidx.loader.content.Loader;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import com.example.pet.data.PetContract;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -42,7 +43,19 @@ public class CatalogActivity extends AppCompatActivity implements androidx.loade
         View emptyView=findViewById(R.id.EmptyListView);
 
         listView.setEmptyView(emptyView);
-        //pet cursor adapter should be null because initailly we have to set to null
+        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            //that is why id for is important and we used in  on create loader because it has been later used by cursor adapter
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+                switch (position)
+                {
+                    case 1:
+                        Inten
+                }
+            }
+        });
+        //pet cursor adapter should be null because initially we have to set to null
 
         petCursorAdapter=new PetCursorAdapter(this,null);
         listView.setAdapter(petCursorAdapter);
