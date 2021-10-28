@@ -1,4 +1,5 @@
 package com.example.pet;
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -7,6 +8,8 @@ import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
+
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -23,7 +26,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 public class CatalogActivity extends AppCompatActivity implements androidx.loader.app.LoaderManager.LoaderCallbacks<Cursor> {
     private static final int PET_LOADER_ID=0;
   PetCursorAdapter petCursorAdapter;
-
+public static String LOG_TAG_Catalog=CatalogActivity.class.getSimpleName();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,11 +51,16 @@ public class CatalogActivity extends AppCompatActivity implements androidx.loade
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
 
-                switch (position)
-                {
-                    case 1:
-                        Inten
-                }
+                Intent a1=new Intent(CatalogActivity.this,EditorActivity.class);
+
+                Uri CurrentUri= ContentUris.withAppendedId(PetContract.PetEntry.CONTENT_URI,id);
+
+                a1.setData(CurrentUri);
+
+                Log.e(LOG_TAG_Catalog,"URI IS "+CurrentUri);
+
+
+                startActivity(a1);
             }
         });
         //pet cursor adapter should be null because initially we have to set to null
