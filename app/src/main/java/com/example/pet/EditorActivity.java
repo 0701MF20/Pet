@@ -1,10 +1,13 @@
 package com.example.pet;
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
 import androidx.loader.app.LoaderManager;
@@ -14,6 +17,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -29,8 +33,10 @@ import static java.security.AccessController.getContext;
  */
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    //
+    //THIS IS FOR ID OF THREAD TO BE USED
     public static final int PET_EDITORIAL=2;
+    //Initial condition
+    public boolean mPetHasChanged=false;
     /** fOR COUNT*/
     private static int count=0;
     /** EditText field to enter the pet's name */
@@ -58,18 +64,16 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_editor);
         //To recieve the intents
-        Intent intent=getIntent();
+        Intent intent = getIntent();
         //To recieve the data associated with the intent
-        IntentContentUri=intent.getData();
+        IntentContentUri = intent.getData();
 
         if (IntentContentUri != null) {
             setTitle(getString(R.string.edit_a_pet));
             //i keep loadermanager instance inside this loop so that idf the label is edit the they will show available data otherwise we do not need this
 
-            LoaderManager.getInstance(this).initLoader(PET_EDITORIAL,null,this);
-        }
-        else
-        {
+            LoaderManager.getInstance(this).initLoader(PET_EDITORIAL, null, this);
+        } else {
             setTitle(getString((R.string.add_a_pet)));
         }
 
@@ -82,6 +86,20 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mGenderSpinner = (Spinner) findViewById(R.id.spinner_gender);
 
         setupSpinner();
+        //this is a touch listener which is used in order to get to know about the data changed and if it is changed on touch then
+        //value is change to true
+        View.OnTouchListener touchListener = new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                mPetHasChanged = true;
+                return false;
+            }
+        };
+        //then i am applying the listeners on the different edit text and text spinners to get to set the listeneers on touch that means on change
+        mNameEditText.setOnTouchListener(touchListener);
+        mBreedEditText.setOnTouchListener(touchListener);
+        mWeightEditText.setOnTouchListener(touchListener);
+        mGenderSpinner.setOnTouchListener(touchListener);
 
     }
 
@@ -175,6 +193,48 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             }
         }
  }
+//creation of customized dialog box
+    private void showNoHasChangedDialogBox(DialogInterface.OnClickListener discardOnClickListener)
+    {
+        //AlterDialog.Builder method is actually used to call different method for dialog box for example setMessage,setPOSITIVEBUTTON
+        AlertDialog.Builder builder=new AlertDialog.Builder(this);
+//for title
+        builder.setTitle("WARNING!!!");
+       //this method is for shoeing the message alertDialog
+        builder.setMessage("Discard your changes and quit editing?");
+        //for +ve message
+        builder.setPositiveButton("DISCARD",discardOnClickListener);
+        //for negative message
+        builder.setNegativeButton("DISMISS", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if(dialog!=null)
+                {
+                    dialog.dismiss();
+                }
+            }
+        });
+        //to create the dialog box
+        AlertDialog alertDialog=builder.create();
+        alertDialog.show();
+    }
+ //this is for the  top back arrow or backUpHomeEnable bUTTON
+    @Override
+    public void onBackPressed() {
+        //If nothing is changed in edit text and then we press back button then in that case it will return to the parent acitvity that is catalog activity
+        if(!mPetHasChanged) {
+            super.onBackPressed();
+            return;
+        }
+            DialogInterface.OnClickListener discardOnClickListener=new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+              //for just simily finish it or not save the et details
+              finish();
+                }
+            };
+        showNoHasChangedDialogBox(discardOnClickListener);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -191,7 +251,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             case R.id.action_save:
                 Log.e("EditorActivity","Name is: "+mNameEditText.getText().toString());
                 Log.e("EditorActivity","Breed is: "+mBreedEditText.getText().toString());
-           //     Log.e("EditorActivity","Weight is: "+Integer.parseInt(mWeightEditText.getText().toString()));
+         //solved the bugs
                 if((TextUtils.isEmpty(mNameEditText.getText().toString()))&&(mGender==0)&&TextUtils.isEmpty(mBreedEditText.getText().toString()))
                 {
                     Toast.makeText(this,"Pet name and gender are mandatory",Toast.LENGTH_SHORT).show();
@@ -215,8 +275,24 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
+             //this actually when we just press to return to home screen.(<|)this type of figure in my phone
                 // Navigate back to parent activity (CatalogActivity)
-                NavUtils.navigateUpFromSameTask(this);
+                //NavUtils.navigateUpFromSameTask(this);
+                //if nothing has changed in pet details then
+                if(!mPetHasChanged)
+                {
+                    NavUtils.navigateUpFromSameTask(this);
+                    break;
+                }
+                //this is actually tellinh what to do when something changes .i.e on discard
+                DialogInterface.OnClickListener discardOnClickListeners=new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                       //it will navigate from current acivity t paret of the the activity
+                        NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                    }
+                };
+                showNoHasChangedDialogBox(discardOnClickListeners);
                 return true;
         }
         return super.onOptionsItemSelected(item);
