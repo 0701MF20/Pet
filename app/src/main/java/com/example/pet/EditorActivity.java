@@ -29,6 +29,7 @@ import static java.security.AccessController.getContext;
  */
 public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    //
     public static final int PET_EDITORIAL=2;
     /** fOR COUNT*/
     private static int count=0;
@@ -131,8 +132,16 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // Use trim to eliminate leading or trailing white space
         String name = mNameEditText.getText().toString().trim();
         String breed = mBreedEditText.getText().toString().trim();
-        int weights = Integer.parseInt(mWeightEditText.getText().toString().trim());
-
+        int weights=0;
+       //If empty then i means it will save 0 in database by default
+        if(TextUtils.isEmpty(mWeightEditText.getText().toString().trim()))
+        {
+           weights=0;
+        }
+        else {
+            //here we are extracting the weights
+           weights = Integer.parseInt(mWeightEditText.getText().toString().trim());
+        }
         // Create a ContentValues object where column names are the keys,
         // and pet attributes from the editor are the values.
         //content value
@@ -141,6 +150,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         values2.put(PetContract.PetEntry.COLUMN_PET_BREED, breed);
         values2.put(PetContract.PetEntry.COLUMN_PET_GENDER, mGender);
         values2.put(PetContract.PetEntry.COLUMN_PET_WEIGHT, weights);
+        //if intent content is null that means we need to add the pet data
         if (IntentContentUri == null)
         {
             //for inserting content values
@@ -154,7 +164,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             Toast.makeText(this, R.string.pet_insertion_successful, Toast.LENGTH_SHORT).show();
         }
     } else {
+            //it will gives nos of row that are catually updated.
             int rowUpdated=getContentResolver().update(IntentContentUri,values2,null,null);
+            //nothing is updated this means that
             if(rowUpdated==0)
             {
                 Toast.makeText(this,"Editor update failed"+rowUpdated,Toast.LENGTH_SHORT).show();
@@ -163,6 +175,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             }
         }
  }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu options from the res/menu/menu_editor.xml file.
@@ -170,15 +183,29 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         getMenuInflater().inflate(R.menu.menu_editor, menu);
         return true;
     }
-
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
+                Log.e("EditorActivity","Name is: "+mNameEditText.getText().toString());
+                Log.e("EditorActivity","Breed is: "+mBreedEditText.getText().toString());
+           //     Log.e("EditorActivity","Weight is: "+Integer.parseInt(mWeightEditText.getText().toString()));
+                if((TextUtils.isEmpty(mNameEditText.getText().toString()))&&(mGender==0)&&TextUtils.isEmpty(mBreedEditText.getText().toString()))
+                {
+                    Toast.makeText(this,"Pet name and gender are mandatory",Toast.LENGTH_SHORT).show();
+                    Intent i2=new Intent(this,CatalogActivity.class);
+                    startActivity(i2);
+                }
+                else
+                {
+                    //for inserting row of information
+                    insertPet();
+                }
+               //      check();
                 //for inserting row of information
-                insertPet();
+                //insertPet();
                 //finish or exit to this activity
                 finish();
                 return true;
@@ -199,7 +226,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public Loader<Cursor> onCreateLoader(int id,Bundle args) {
-
+//creation of loader just like the catalog activity to have secodany thread for this work
         String[] projections=new String[]{
                 PetContract.PetEntry._Id,
                 PetContract.PetEntry.COLUMN_PET_NAME,
@@ -239,10 +266,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             mBreedEditText.setText(""+breedPet);
             mWeightEditText.setText(""+weightPet);
            mGenderSpinner.setSelection(genderPet);
-            Log.e("EditorActivity","name PET: "+namePet);
-            Log.e("EditorActivity","breed PET: "+breedPet);
-            Log.e("EditorActivity","name PET: "+genderPet);
-            Log.e("EditorActivity","name PET: "+weightPet);
         }
     }
 
