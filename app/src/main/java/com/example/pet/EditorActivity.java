@@ -249,12 +249,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
-                Log.e("EditorActivity","Name is: "+mNameEditText.getText().toString());
-                Log.e("EditorActivity","Breed is: "+mBreedEditText.getText().toString());
          //solved the bugs
                 if((TextUtils.isEmpty(mNameEditText.getText().toString()))&&(mGender==0)&&TextUtils.isEmpty(mBreedEditText.getText().toString()))
                 {
-                    Toast.makeText(this,"Pet name and gender are mandatory",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this,R.string.Pet_Gendermandatory,Toast.LENGTH_SHORT).show();
                     Intent i2=new Intent(this,CatalogActivity.class);
                     startActivity(i2);
                 }
