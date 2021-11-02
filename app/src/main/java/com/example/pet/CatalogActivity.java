@@ -59,7 +59,6 @@ public static String LOG_TAG_Catalog=CatalogActivity.class.getSimpleName();
 
                 Log.e(LOG_TAG_Catalog,"URI IS "+CurrentUri);
 
-
                 startActivity(a1);
             }
         });
@@ -100,13 +99,7 @@ public static String LOG_TAG_Catalog=CatalogActivity.class.getSimpleName();
      * Temporary helper method to display information in the onscreen TextView about the state of
      * the pets database.
      */
-/*
-    @Override
-    protected void onStart() {
-        super.onStart();
 
-    }
-*/
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu options from the res/menu/menu_catalog.xml file.
@@ -131,7 +124,7 @@ public static String LOG_TAG_Catalog=CatalogActivity.class.getSimpleName();
         }
         return super.onOptionsItemSelected(item);
     }
-
+//creating cursor loader
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {

@@ -207,7 +207,7 @@ private PetDbHelper mDbHelpers;
         {
             //for weight
             Integer sanityWeight=contentValues.getAsInteger(PetContract.PetEntry.COLUMN_PET_WEIGHT);
-            if(sanityWeight!=null&&sanityWeight>0)
+            if(sanityWeight!=null&&sanityWeight<0)
             {
                 throw new IllegalArgumentException("Weight must be positive");
             }
