@@ -247,7 +247,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
         return true;
     }
-
+//just override the prepare option menu to play with menu items
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
