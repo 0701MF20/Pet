@@ -70,4 +70,8 @@
     <string name="edit_a_pet">Edit a pet</string>
 <!--TITLE FOR TOAST Pet name and gender are mandatory!-->
     <string name="Pet_Gendermandatory">Pet name and gender are mandatory</string>
+    <!--PET IS DELETED!-->
+    <string name="Individual_Pet_Delete">Pet is deleted</string>
+    <!--Warning alertDialog title!-->
+    <string name="warning_title">Warning!!!</string>
 </resources>

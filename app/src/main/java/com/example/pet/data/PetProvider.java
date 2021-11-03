@@ -258,7 +258,7 @@ private PetDbHelper mDbHelpers;
         }
         if(rowDeleted!=0)
         {
-            //notify about if any change occur(in local term it is sound)
+            //notify about if any change occur(in local term it is just liking sound)
             getContext().getContentResolver().notifyChange(uri,null);
         }
         return rowDeleted;

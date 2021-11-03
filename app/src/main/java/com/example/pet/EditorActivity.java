@@ -196,13 +196,53 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             }
         }
  }
-//creation of customized dialog box
+ //For deleting the pet it is actiually the function which we used to delte the pet record and clearly visible
+    //that this method is not connected with the Database directly it taking help of content rsolver to access content provider whic will able access the database
+
+ private void petDelete()
+ {
+     getContentResolver().delete(IntentContentUri,
+             null,
+             null);
+     //After Delete return back to the catalog activiy with updated records after deletion
+     NavUtils.navigateUpFromSameTask(this);
+ }
+ //Create a customized Delete Alert Dialog Box
+ private void showDeleteDialogBox()
+ {
+     //AlertDialog.Builder create it and assign a title,message,setPositive,setNegative
+     AlertDialog.Builder builderForDelete=new AlertDialog.Builder(this);
+     builderForDelete.setTitle(R.string.warning_title);
+     builderForDelete.setMessage("Do you really want to delete this pet?");
+     //For not deleting
+     builderForDelete.setPositiveButton("No", new DialogInterface.OnClickListener() {
+         @Override
+         public void onClick(DialogInterface dialog, int which) {
+             if(dialog!=null)
+             {
+                 dialog.dismiss();
+             }
+         }
+     });
+     //FOR DELETING
+     builderForDelete.setNegativeButton("Yes", new DialogInterface.OnClickListener() {
+         @Override
+         public void onClick(DialogInterface dialog, int which) {
+             Toast.makeText(EditorActivity.this,R.string.Individual_Pet_Delete,Toast.LENGTH_SHORT).show();
+             petDelete();
+         }
+     });
+     //creation of alert dialog box and also show that
+     AlertDialog deleteAlertDialog=builderForDelete.create();
+     deleteAlertDialog.show();
+ }
+//creation of customized dialog box for giving warning if we left after righting(In this touchListener plays important role in it)
     private void showNoHasChangedDialogBox(DialogInterface.OnClickListener discardOnClickListener)
     {
         //AlterDialog.Builder method is actually used to call different method for dialog box for example setMessage,setPOSITIVEBUTTON
         AlertDialog.Builder builder=new AlertDialog.Builder(this);
 //for title
-        builder.setTitle("WARNING!!!");
+        builder.setTitle(R.string.warning_title);
        //this method is for shoeing the message alertDialog
         builder.setMessage("Discard your changes and quit editing?");
         //for +ve message
@@ -284,11 +324,14 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 return true;
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
-                // Do nothing for now
+              if(IntentContentUri!=null)
+               {
+                   showDeleteDialogBox();
+               }
                 return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
-             //this actually when we just press to return to home screen.(<|)this type of figure in my phone
+            //<-
                 // Navigate back to parent activity (CatalogActivity)
                 //NavUtils.navigateUpFromSameTask(this);
                 //if nothing has changed in pet details then

@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
+
 import com.example.pet.data.PetContract;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 //these import statement are import as it takes me an our to find this error
@@ -68,6 +70,7 @@ public static String LOG_TAG_Catalog=CatalogActivity.class.getSimpleName();
         listView.setAdapter(petCursorAdapter);
         //noinspection deprecation
         getSupportLoaderManager().initLoader(PET_LOADER_ID, null, this);
+  //If there is no pet in our pet adpter cursors the it made no sense to even show option to delete all
 
     }
     /**
@@ -95,6 +98,14 @@ public static String LOG_TAG_Catalog=CatalogActivity.class.getSimpleName();
         Uri uri1=getContentResolver().insert(PetContract.PetEntry.CONTENT_URI,values);
 
     }
+    private void deleteAllEntries()
+    {
+        if(petCursorAdapter.getCursor().getCount()!=0) {
+           int rowCount=getContentResolver().delete(PetContract.PetEntry.CONTENT_URI, null, null);
+           Log.e(LOG_TAG_Catalog,"Number of rows deleted are: "+rowCount);
+           Toast.makeText(this,"All pet are deleted",Toast.LENGTH_SHORT).show();
+        }
+    }
     /**
      * Temporary helper method to display information in the onscreen TextView about the state of
      * the pets database.
@@ -107,6 +118,9 @@ public static String LOG_TAG_Catalog=CatalogActivity.class.getSimpleName();
         getMenuInflater().inflate(R.menu.menu_catalog, menu);
         return true;
     }
+
+
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
@@ -114,13 +128,12 @@ public static String LOG_TAG_Catalog=CatalogActivity.class.getSimpleName();
             // Respond to a click on the "Insert dummy data" menu option
             case R.id.action_insert_dummy_data:
                 insert();
-            break;
-               // return true;
+                return true;
             // Respond to a click on the "Delete all entries" menu option
             case R.id.action_delete_all_entries:
+                deleteAllEntries();
                 // Do nothing for now
-                //return true;
-                break;
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
