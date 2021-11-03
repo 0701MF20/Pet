@@ -2,6 +2,7 @@ package com.example.pet;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,12 @@ public class PetCursorAdapter extends CursorAdapter {
     TextView petName=(TextView)view.findViewById(R.id.name_pet_Id);
     TextView petBreed=(TextView)view.findViewById(R.id.breed_pet_Id);
     petName.setText(pet_name);
+    //so we will check if the pet breed is empty then in order to provide broad inside we will chagge iit to unknown
+        //but on database unkown is not stored
+    if(TextUtils.isEmpty(pet_breed))
+    {
+      pet_breed="Unknown";
+    }
     petBreed.setText(pet_breed);
     }
 
