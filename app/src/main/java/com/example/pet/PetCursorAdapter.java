@@ -30,7 +30,7 @@ public class PetCursorAdapter extends CursorAdapter {
         //but on database unkown is not stored
     if(TextUtils.isEmpty(pet_breed))
     {
-      pet_breed="Unknown";
+      pet_breed="Unknown Breed";
     }
     petBreed.setText(pet_breed);
     }
