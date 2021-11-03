@@ -10,6 +10,7 @@ import android.os.Bundle;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.NavUtils;
+import androidx.fragment.app.FragmentOnAttachListener;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
@@ -75,6 +76,8 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             LoaderManager.getInstance(this).initLoader(PET_EDITORIAL, null, this);
         } else {
             setTitle(getString((R.string.add_a_pet)));
+            //As we are just adding the pet then it does not make sense to delete that
+            invalidateOptionsMenu();
         }
 
         //to start thee loader
@@ -241,8 +244,23 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         // Inflate the menu options from the res/menu/menu_editor.xml file.
         // This adds menu items to the app bar.
         getMenuInflater().inflate(R.menu.menu_editor, menu);
+
         return true;
     }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        //mandatory part if i want to want to rmove the menu item then we have to follow this along with the invalidOptionMenu()
+        // If this is a new pet, hide the "Delete" menu item.
+        if(IntentContentUri==null)
+        {
+           MenuItem item1=menu.findItem(R.id.action_delete);
+           item1.setVisible(false);
+        }
+       return true;
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         // User clicked on a menu option in the app bar overflow menu
@@ -261,9 +279,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                     //for inserting row of information
                     insertPet();
                 }
-               //      check();
-                //for inserting row of information
-                //insertPet();
                 //finish or exit to this activity
                 finish();
                 return true;
